@@ -17,8 +17,9 @@ const corsOptions = {
     const allowedOrigins = [
       'http://localhost:3000', // Local development
       'http://localhost:3001', // Local development alternative
-      'https://your-vercel-app.vercel.app', // Replace with your Vercel app URL
-      // Add other allowed origins here
+      'http://localhost:5173', // Vite dev server
+      'https://kgpnow.vercel.app', // Production frontend
+      'https://kgpnow-backend.vercel.app' // Production backend (for API docs)
     ];
 
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
