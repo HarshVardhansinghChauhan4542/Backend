@@ -93,7 +93,16 @@ const connectDB = async () => {
 connectDB();
 
 // For Vercel serverless functions
-export default async (req, res) => {
+const handler = async (req, res) => {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization'
+  );
+
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -105,8 +114,13 @@ export default async (req, res) => {
 
 // For local development
 if (process.env.NODE_ENV !== 'production') {
+  const http = require('http');
+  const server = http.createServer(app);
   const port = process.env.PORT || 3001;
-  app.listen(port, () => {
+  
+  server.listen(port, () => {
     console.log(`Server running on port ${port}`);
   });
 }
+
+export default handler;
