@@ -47,9 +47,39 @@ app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
 
+// Root endpoint with API documentation
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'success',
+    message: 'Welcome to KGPnow API',
+    documentation: {
+      health: 'GET /api/health',
+      auth: {
+        register: 'POST /api/auth/register',
+        login: 'POST /api/auth/login',
+        // Add other auth endpoints as needed
+      },
+      events: {
+        getAll: 'GET /api/events',
+        getOne: 'GET /api/events/:id',
+        create: 'POST /api/events',
+        update: 'PUT /api/events/:id',
+        delete: 'DELETE /api/events/:id'
+      }
+    },
+    environment: process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'ok', message: 'Server is running' });
+  res.status(200).json({ 
+    status: 'ok', 
+    message: 'Server is running',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
+  });
 });
 
 // 404 handler
