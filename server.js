@@ -70,21 +70,43 @@
 
 
 import app from "./app.js";
-import http from "http";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const server = http.createServer(app);
-const port = process.env.PORT || 3001;
+// MongoDB connection
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("✅ Connected to MongoDB");
+  } catch (error) {
+    console.error("❌ MongoDB connection error:", error.message);
+    process.exit(1);
+  }
+};
 
-server.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+// Connect to MongoDB when the server starts
+connectDB();
 
-mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log("Connected to MongoDB"))
-.catch((err) => {
-  console.error("MongoDB connection error:", err.message);
-});
+// For Vercel serverless functions
+export default async (req, res) => {
+  // Handle CORS preflight
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  // Pass the request to Express
+  return app(req, res);
+};
+
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  const port = process.env.PORT || 3001;
+  app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
+}
