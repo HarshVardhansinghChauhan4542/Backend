@@ -12,20 +12,14 @@
       "dest": "/server.js"
     },
     {
-      "src": "/",
+      "src": "^/(.*)",
       "dest": "/server.js"
-    },
+    }
+  ],
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "/server.js"
-    },
-    {
-        "rewrites": [
-            {
-                "source": "/(.*)",
-                "destination": "/server.js"
-            }
-        ]
+      "source": "/(.*)",
+      "destination": "/server.js"
     }
   ]
 }
